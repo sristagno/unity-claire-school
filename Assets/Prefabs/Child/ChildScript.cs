@@ -38,15 +38,25 @@ public class ChildScript : MonoBehaviour
     {
         if (_isInCage)
         {
+            
             _agentChild.SetDestination(_player.transform.position);
             _agentChild.speed = 0f;
         }
         else
         {
             _animatorChild.SetBool(RunningState, true);
-            _agentChild.SetDestination(target.position);
+            if (_agentChild.destination != target.position)
+            {
+                _agentChild.SetDestination(target.position);    
+            }
             _agentChild.speed = 5f;
-            if (_agentChild.remainingDistance <= _agentChild.stoppingDistance)
+            float distance = _agentChild.remainingDistance;
+            if (_agentChild.pathPending)
+            {
+                distance = Vector3.Distance(transform.position, target.position);
+            }
+
+            if (distance <= _agentChild.stoppingDistance)
             {
                 _agentChild.isStopped = true;
                 _animatorChild.SetBool(RunningState, false);
